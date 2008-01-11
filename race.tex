@@ -1,0 +1,231 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[official]{eurosym}
+\usepackage{a4wide}
+
+\newcommand{\hdr}[1]{\newpage\begin{center}\Huge\sc #1\par\vspace{1em}\end{center}}
+\newcommand{\spns}[1]{\begin{center}{\Large #1}\end{center}\vspace{0.25em}}
+\newcounter{race}
+\setcounter{race}{0}
+\newcounter{horse}
+\newcommand{\racehdr}[3]{%
+	\addtocounter{race}{1}\ifodd\therace\newpage\fi%
+	\begin{center}{\Huge\sc Race N\raisebox{0.13em}{o} #3\par{\bf #1}\par}\vspace{1em}{\sc Sponsored by #2\par}\vspace{1em}\end{center}}
+\newcommand{\auctracehdr}[3]{%
+	\addtocounter{race}{1}\newpage%
+	\begin{center}{\Huge\sc AUCTION RACE\\Race N\raisebox{0.13em}{o} #3\par{\bf #1}\par}\vspace{1em}{\sc Sponsored by #2\par}\vspace{1em}\end{center}}
+
+\newcommand{\horseracetbl}[3]{\addtocounter{horse}{1}\thehorse & #1 & #2 & #3\\}
+\newenvironment{racetbl}{%
+	\setcounter{horse}{0}\let\horse=\horseracetbl%
+	\begin{center}\begin{large}%
+	\begin{tabular}[h]{r@{\hspace{1em}}l@{\hspace{1em}}l@{\hspace{1em}}l}%
+	&\bf Horse &\bf Jockey &\bf Owner\\\hline%
+}{\end{tabular}\end{large}\end{center}\vspace{1em}}
+
+\newcommand{\auctracetblhorse}[1]{\addtocounter{horse}{1}\thehorse & #1 & \\}
+\newenvironment{auctracetbl}{%
+	\setcounter{horse}{0}\let\horse=\auctracetblhorse%
+	\begin{center}\begin{large}%
+	\begin{tabular}[h]{r@{\hspace{1em}}l@{\hspace{1em}}l}%
+	&\bf Horse &\bf \makebox[16em]{Owner}\\\hline%
+}{\end{tabular}\end{large}\end{center}}
+
+\begin{document}
+\pagestyle{empty}
+\begin{center}
+\vspace*{10em}
+
+{\Large\sc Aclare Celtic F.C. \par}
+\vspace{2em}{\sc present\par}\vspace{2em}
+{\LARGE\bf ``A Night at the Races''\par}
+\vspace{2em}{\sc to be held in\par}\vspace{2em}
+{\Large\sc Flynn's Pub\par}
+\vspace{2em}{\sc on Friday, 28th December 2007\par}
+\end{center}
+
+\hdr{Details of the Race Night}
+\begin{large}
+\begin{enumerate}
+\item There will be \emph{eight horses} in each race. Any one of the horses
+      can wil the race and no skill is required to pick the winner.
+\item The Master of Ceremonies will announce when betting is open. You
+      can then buy your tickets for the horse you have chosen.
+\item Each ticket costs \euro{}1 each, and you can buy as you wish on as many
+      horses as you wish.
+\item The winners will be the tickets bough on the winning horse and these
+      will be paid after the race. The amount of winnings is calculated on
+      the total amount taken on that particular race.
+\item The programme/race card gives the names of the horses, owners, and
+      jockeys. The commentary on the race will be by number only.
+\item The last race is an auction race. Each horse can be purchased
+      tonight---by individuals or syndicates---by the highest bidder.
+\end{enumerate}
+\end{large}
+\vspace{2em}
+
+\begin{Large}
+\noindent Aclare Celtic F.C.\ wish to thank most sincerely all our sponsors, those who
+purchased horses, and those who supported our race night.\par
+\end{Large}
+\hdr{Many Thanks to Our Kind Sponsors}
+\spns{Fallon's Builders}
+\spns{Michael O'Hara Crash Repairs}
+\spns{Aileen Egan Chartered Accountants, Tubbercurry}
+\spns{Moy Ridge Nursing Home}
+\spns{McKane Pharmacy, Ballina}
+\spns{Paddy O'Hara's Gutters}
+\spns{John Brennan Undertakers, Cloonacool}
+\spns{Surlis's, Tubbercurry}
+\spns{Coast Oil}
+\spns{Tommy Gaughan Welding}
+\spns{FBD Insurance Ltd.}
+\spns{Flynn's Pub, Aclare}
+\racehdr{The Bricky Chase}{Fallon's Builders}{1a}
+\begin{racetbl}
+\horse{Clooneen King}{Cathal Gavaghan}{Enda Gavaghan}
+\horse{Hennessy}{Portland}{Sarah Jayne McNulty}
+\horse{Solo Lux}{Cullan}{Noel Heany}
+\horse{Basta Forever}{Tony McCoy}{Brenda Gannon}
+\horse{O'Hara Gutter}{Paddy}{Dermot Reidy}
+\horse{Burger Bites}{John Burke}{Vincint Broderick}
+\horse{Damien Lad}{Nicole Price}{John Joe}
+\horse{Carl's Flight}{Kathleen Cunnie}{Mary Cunnie}
+\end{racetbl}
+\racehdr{The Civic Cup}{Michael O'Hara Crash Repairs}{1b}
+\begin{racetbl}
+\horse{Barry Whites}{Tiny Arse}{Bob Tuersley}
+\horse{Striker's Fancy}{Mags Fallon}{Marian Fallon}
+\horse{Ham And Cheese}{Denny's}{Gabriel Tuersley Jr.}
+\horse{Mighty Craic}{Who's Filler}{Shane Walsh}
+\horse{Ex Golfer}{Computer Genius}{Joe Quinn}
+\horse{Hell Or High Water}{Wang}{Stephen O'Hara}
+\horse{Tigger's Tale}{Calum}{Kieran Neary}
+\horse{Black Star}{Enda Heaney}{Stephanie Heaney}
+\end{racetbl}
+\racehdr{The SSIA Prize Chase}{Aileen Egan Chartered Accountants, Tubbercurry}{2a}
+\begin{racetbl}
+\horse{She's The Fastest}{Bart Simpson}{Edel Daugherty}
+\horse{Christmas Toddy}{Jmarika}{Jack and Mark Lundy}
+\horse{Music Man}{Caoimhe Flannery}{Kevin Flannery}
+\horse{Gunner's Mate}{Ronin Doyle}{John Doyle}
+\horse{Bucks On Blue}{Seany D.}{Ambrose Durcan}
+\horse{iPod}{Fingers}{David Walsh}
+\horse{Barry The Nag}{Lucy}{Ciaran Grennan}
+\horse{Wren Girl}{Take Two}{Marie Durcan}
+\end{racetbl}
+\racehdr{The Moy Ridge Hurdle}{Moy Ridge Nursing Home}{2b}
+\begin{racetbl}
+\horse{Killasser Trio}{John Bud}{Jonathan Connolly}
+\horse{Culdalee Lass}{Martin Cunnie}{Kathleen Cunnie}
+\horse{Into The Wind}{Stephen Brady}{Stephen Brady}
+\horse{Freddy Boy}{Fireman Sam}{Louise Tuersley}
+\horse{Anfield Runner}{Jim Bob}{Brian Walsh}
+\horse{Mr. Buff}{Serac}{John Battle}
+\horse{Tubberroddy Triumph}{Jordan}{Jack Lundy}
+\horse{Tubberroddy Tyson}{Pele}{Mark Lundy}
+\end{racetbl}
+\racehdr{The McKane Chase}{McKane Pharmacy, Ballina}{3a}
+\begin{racetbl}
+\horse{Darragh Lad}{Seany D.}{Yvonne Durcan}
+\horse{Kwijibo}{Paddy Durcan}{Nefty}
+\horse{Hoof Hearthed}{I Did}{Paul Walsh}
+\horse{Olympic Lux}{Culann}{Enda Heaney}
+\horse{Feel The Heat}{Molly Kennedy}{Kenco Lads}
+\horse{Big Tom}{James McLoughlin}{Enda Heaney}
+\horse{Killasser Pride}{AnnMarie Neville}{Sean Neville}
+\horse{Rusty}{Mark Beattie}{Norreen Cunnie}
+\end{racetbl}
+\racehdr{The O'Hara Trophy}{Paddy O'Hara's Gutters}{3b}
+\begin{racetbl}
+\horse{Sky's The Limit}{Peg}{Brian Ginty}
+\horse{Sheila's Pet}{Martin O'Hara}{Eugene Dunne}
+\horse{Sheepwalk Express}{Dympna and Matthew}{Phylis Irwin}
+\horse{Baby Evie}{Little Anne}{John Faye}
+\horse{James Boy}{Seany D.}{Yvonne Durcan}
+\horse{The Good Thief}{Greyhand Phil}{Matthew Cronnolly}
+\horse{Trench Coat}{Correct Me At Nine}{Joseph Quinn}
+\horse{Nathan The Plasterer}{Ruby Walsh}{Enda Gannon}
+\end{racetbl}
+\racehdr{The Chief Mourner Hurdles}{John Brennan Undertakers, Cloonacool}{4a}
+\begin{racetbl}
+\horse{Lady}{Ceola Flannery}{Bernie Flannery}
+\horse{Crazy Lady}{Thumper}{Matt Igoe}
+\horse{Caroline's Fancy}{Michael O'Hara}{Connor O'Hara}
+\horse{Aclare Plastic}{Kathleen Egan}{Neil Egan}
+\horse{Mayo For Sam}{Kieran O'Grady}{Peter Howley}
+\horse{Killasser Stud}{Aiden Ginty}{Vincent Ginty}
+\horse{Text-Em-Queen}{Rian Kennedy}{Oisin Kennedy}
+\horse{First Disco}{Grainne}{Sean Quinn}
+\end{racetbl}
+\racehdr{The Surlis Chase}{Surlis's, Tubbercurry}{4b}
+\begin{racetbl}
+\horse{United Lad}{Red Devil}{Jason Treacy}
+\horse{Maybe}{Someday}{Anne Price}
+\horse{Santa}{Miss Clause}{Rosemary Walsh}
+\horse{See More Didi}{Lacy Brahe}{Shane Walsh}
+\horse{AC}{Frankie}{Mickey Durcan}
+\horse{Pat Price}{Pat Price}{Pat Price}
+\horse{On A Donkey}{Enda Heaney}{James McDonagh}
+\horse{Bluestar Boy}{Midnight Blue}{Martin Breege}
+\end{racetbl}
+\racehdr{The Green Petrol Handicap Chase}{Coast Oil}{5}
+\begin{racetbl}
+\horse{Whatever}{Dude}{Tom Walsh}
+\horse{Red Rocket}{Dolores Broe}{Mary McNulty}
+\horse{Builder's Mate}{Sianna Fallon}{Mags Fallon}
+\horse{Cat}{Dog}{Rosemary Walsh}
+\horse{Salted Tiger}{Tom Jones}{Oliver King}
+\horse{Turtle Flyer}{Roger Rabbit}{David Heaney}
+\horse{Le Moo}{Barry Price}{Una Price}
+\horse{In The Gallows}{Fiona McGrath}{Noel Manley}
+\end{racetbl}
+\racehdr{The Welded Cup}{Tommy Gaughan Welding}{6}
+\begin{racetbl}
+\horse{Don't Know Man!}{Bert Broe}{Adam Broe}
+\horse{King Of Luck}{Raymond Gannon}{Raymond Gannon}
+\horse{Two Old Cars}{Falling Apart}{Michael Quinn}
+\horse{Manley's Day}{Can't Wait}{Barry Price}
+\horse{Nissan Sunny}{Michael Hallinan}{Michael Hallinan}
+\horse{Black Beauty}{Vinny Ginty}{Mary Kavanagh}
+\horse{Killure Pride}{Leonie}{Leo Gaughan}
+\horse{Holly's Star}{Kieran Fallon}{Regina Gannon}
+\end{racetbl}
+\racehdr{The Insurance Premium Chase}{FBD Insurance Ltd.}{7}
+\begin{racetbl}
+\horse{Same Horse}{Young Buck}{Paul Durcan}
+\horse{Cook The Books}{Zac Neelon}{Lucia Neelon}
+\horse{Turkey's Delight}{J. Burke}{Andrew McNulty}
+\horse{Bob The Dog}{Holly}{Caroline Gannon}
+\horse{Michael Noone}{Michael Noone}{Michael Noone}
+\horse{Shadowfax}{Frodo}{Lucy Neary}
+\horse{Johnny Allstar}{Gordie Carter}{John Maloney}
+\horse{Curoy Lad}{John Boy}{Mary Durcan}
+\end{racetbl}
+\racehdr{The Next Round's On Me Trophy}{Flynn's Pub, Aclare}{8}
+\begin{racetbl}
+\horse{Bend Them Buddy}{Katie O'Hara}{Christopher O'Hara}
+\horse{Dawn Run}{Christmas}{Leo Kelly}
+\horse{Late Apartment}{Shauna}{Patrick Quinn}
+\horse{Indian Weddingcrasher}{Elephant Rider}{Gerard Quinn}
+\horse{Keane}{Michael}{Paul Durcan}
+\horse{Shergar}{Louise O'Grady}{Kieran O'Grady}
+\horse{Daddy I'm Slippy}{Oliver Klozoff}{Jerome Quinn}
+\horse{Susie Q}{Ted Longwood}{Simone Hession}
+\end{racetbl}
+\auctracehdr{The King of Comedy Steeplechase}{Yours Truly}{9}
+
+\begin{auctracetbl}
+\horse{Belclare Castle}
+\horse{Killasser Queen}
+\horse{Banada Babe}
+\horse{Lislea Lightning}
+\horse{Aclare Avenger}
+\horse{Kilmactigue Capers}
+\horse{Cloonbarry Cause}
+\horse{Claddagh Dream}
+\end{auctracetbl}
+\newpage\vspace*{1pt}
+\newpage\vspace*{1pt}
+
+\end{document}
