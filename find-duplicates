@@ -7,7 +7,7 @@
 #
 # Copyright (c) Keith Gaughan, 2008.
 # All Rights Reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # 
@@ -40,7 +40,10 @@ import getopt
 import filecmp
 
 
-class crc32:
+USAGE = "Usage: %s [-h] [-m<crc|md5>] <dir>*"
+
+
+class crc:
     """
     Wraps up zlib.crc32 to make it suitable for use as a faster but less
     accurate alternative to the hashlib.* classes.
@@ -95,25 +98,22 @@ def true_duplicates(files):
         files = next_set
 
 
-def whittle(grouper, files):
-    """
-    Whittle down and group the list of files to those that appear duplicate.
-    """
-    global verbose
-    dupes = {}
-    for file in files:
-        if verbose:
-            print >>sys.stderr, "==>", file
-        g = grouper(file)
-        if not dupes.has_key(g):
-            dupes[g] = []
-        dupes[g].append(file)
-    if verbose:
-        print >>sys.stderr
-    return (g for g in dupes.itervalues() if len(g) > 1)
+def group_by(groups, grouper, min_size=1):
+    """Breaks each of the groups into smaller subgroups."""
+    for group in groups:
+        subgroups = {}
+        for item in group:
+            g = grouper(item)
+            if not subgroups.has_key(g):
+                subgroups[g] = []
+            subgroups[g].append(item)
+        for g in subgroups.itervalues():
+            if len(g) >= min_size:
+                yield g
 
 
 def usage(message=None):
+    global USAGE
     fh = sys.stdout
     exit_code = 0
     if message:
@@ -121,37 +121,38 @@ def usage(message=None):
         exit_code = 2
         print >>fh, str(message)
     name = os.path.basename(sys.argv[0])
-    print >>fh, "Usage: %s [-vh] [-m<size|crc|md5>] <dir>*" % (name,)
+    print >>fh, USAGE % (name,)
     sys.exit(exit_code)
 
 
 def main():
     global verbose
     try:
-        opts, paths = getopt.getopt(sys.argv[1:], "vhm:")
+        opts, paths = getopt.getopt(sys.argv[1:], "hm:")
     except getopt.GetoptError, err:
         usage(err)
-    verbose = False
-    grouper = os.path.getsize
+    method = crc
     for o, a in opts:
         if o == "-m":
-            if a == 'md5':
-                grouper = lambda file: digest(file, hashlib.md5)
-            elif a == 'crc':
-                grouper = lambda file: digest(file, crc32)
-            elif a == 'size':
-                grouper = os.path.getsize
+            if a == "crc":
+                method = crc
+            elif a == "md5":
+                method = hashlib.md5
             else:
-                usage("Unknown method: %s", (a,))
-        elif o == "-v":
-            verbose = True
+                usage("Unknown grouping method: %s" % (a,))
         elif o == "-h":
             usage()
         else:
             usage("Unknown option: %s%s" % (o, a))
 
+    if len(paths) == 0:
+        paths = ["."]
+
     first = True
-    for group in whittle(grouper, all_files(*paths)):
+    groups = [all_files(*paths)]
+    for grouper in [os.path.getsize, lambda file: digest(file, method)]:
+        groups = group_by(groups, grouper, 2)
+    for group in groups:
         for files in sorted(true_duplicates(group)):
             if first:
                 first = False
