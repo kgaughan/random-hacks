@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Backs up and compresses a remote database.
+#
+
+SERVER_NAME=$1
+. $HOME/Data/mysql-logins
+if [ ! -n "$HOST" ]; then
+	echo "Usage: `basename $0` server [database]"
+	exit
+fi
+
+# A few variables to configure how the backup is done.
+OPTS="-c -C -l --add-drop-table --add-locks --skip-comments --no-set-names"
+DT=`date +%Y%m%d`
+FILE=$HOME/Data/backups/$DB-$DT.sql.bz2
+
+# Do it, baby, yeah!
+echo Please wait...
+echo Backing up db to $FILE
+mysqldump $OPTS -h$HOST -u$USER -p$PASS --databases $DB | bzip2 -c9 >$FILE
+echo Done!

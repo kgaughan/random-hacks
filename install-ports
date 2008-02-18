@@ -1,0 +1,9 @@
+#!/bin/sh
+
+while read PORTNAME; do
+	if pkg_info $PORTNAME\* >/dev/null 2>&1; then
+		echo "Yay! $PORTNAME"
+	else
+		echo "Nay! $PORTNAME"
+	fi
+done

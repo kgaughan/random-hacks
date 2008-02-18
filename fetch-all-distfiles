@@ -1,0 +1,3 @@
+#!/bin/sh
+pkgdb -F
+portinstall --all --fetch-only --upward-recursive --omit-check

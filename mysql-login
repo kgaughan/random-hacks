@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# mysql-login.sh
+# by Keith Gaughan <kmgaughan@eircom.net>
+#
+
+SERVER_NAME=$1
+. $HOME/Data/mysql-logins
+if [ ! -n "$HOST" ]; then
+	echo "Usage: `basename $0` server [database]"
+	exit
+fi
+
+# Log in and replace the shell process with the mysql shell to save a bit
+# of memory. It's not as if we've any cleanup to do or anything...
+echo Logging on to $HOST...
+exec mysql --host=$HOST --user=$USER --password=$PASS $DB
