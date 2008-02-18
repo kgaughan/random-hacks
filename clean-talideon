@@ -1,3 +1,0 @@
-#!/bin/sh
-mysql-login talideon <~/Data/antispam
-echo Spam cleanup complete: check for uncaught spam with "mysql-login talideon"
