@@ -10,7 +10,7 @@
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 #  1. Redistributions of source code must retain the above copyright
 #     notice, this list of conditions and the following disclaimer.
 #
@@ -72,8 +72,8 @@ def all_files(*tops):
                     yield path
 
 
-def digest(file, method=hashlib.md5):
-    with open(file) as f:
+def digest(name, method=hashlib.md5):
+    with open(name) as f:
         h = method(f.read()).digest()
     return h
 
@@ -119,9 +119,9 @@ def usage(message=None):
     if message:
         fh = sys.stderr
         exit_code = 2
-        print >>fh, str(message)
+        print >> fh, str(message)
     name = os.path.basename(sys.argv[0])
-    print >>fh, USAGE % (name,)
+    print >> fh, USAGE % (name,)
     sys.exit(exit_code)
 
 
@@ -149,7 +149,7 @@ def main():
 
     first = True
     groups = [all_files(*paths)]
-    for grouper in [os.path.getsize, lambda file: digest(file, method)]:
+    for grouper in [os.path.getsize, lambda name: digest(name, method)]:
         groups = group_by(groups, grouper, 2)
     for group in groups:
         for files in sorted(true_duplicates(group)):
@@ -157,8 +157,8 @@ def main():
                 first = False
             else:
                 print
-            for file in files:
-                print file
+            for name in files:
+                print name
 
 
 if __name__ == "__main__":
