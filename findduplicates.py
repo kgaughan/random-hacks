@@ -40,13 +40,21 @@ import getopt
 import filecmp
 
 
-USAGE = "Usage: %s [-h] [-m<crc|md5>] <dir>*"
+USAGE = "Usage: %s [-h] [-t] [-m<crc|md5>] <dir>*"
 
 
 class crc:
     """
     Wraps up zlib.crc32 to make it suitable for use as a faster but less
     accurate alternative to the hashlib.* classes.
+
+    >>> foo = crc()
+    >>> foo.update('foo').hexdigest()
+    '-738C9ADF'
+    >>> foo.update('bar').hexdigest()
+    '-6109E06B'
+    >>> crc('foobar').hexdigest()
+    '-6109E06B'
     """
     def __init__(self, initial=None):
         self.crc = 0
@@ -55,6 +63,7 @@ class crc:
     def update(self, block):
         import zlib
         self.crc = zlib.crc32(block, self.crc)
+        return self
     def hexdigest(self):
         return "%X" % self.crc
     def digest(self):
@@ -78,24 +87,25 @@ def digest(name, method=hashlib.md5):
     return h
 
 
-def true_duplicates(files):
+def true_duplicates(items, cmp=filecmp.cmp):
     """
-    Compare the given files, breaking them down into groups with identical
-    content.
+    Compare the given items, breaking them down into groups with identical
+    content. The comparison function is meant to behave like filecmp.cmp(),
+    which is also the default comparison method.
     """
-    while len(files) > 1:
+    while len(items) > 1:
         next_set = []
         this_set = []
-        master = files[0]
+        master = items[0]
         this_set.append(master)
-        for other in files[1:]:
-            if filecmp.cmp(master, other, False):
+        for other in items[1:]:
+            if cmp(master, other, False):
                 this_set.append(other)
             else:
                 next_set.append(other)
         if len(this_set) > 1:
             yield this_set
-        files = next_set
+        items = next_set
 
 
 def group_by(groups, grouper, min_size=1):
@@ -127,7 +137,7 @@ def usage(message=None):
 
 def main():
     try:
-        opts, paths = getopt.getopt(sys.argv[1:], "hm:")
+        opts, paths = getopt.getopt(sys.argv[1:], "hm:t")
     except getopt.GetoptError, err:
         usage(err)
     method = crc
@@ -141,6 +151,10 @@ def main():
                 usage("Unknown grouping method: %s" % (a,))
         elif o == "-h":
             usage()
+        elif o == "-t":
+            import doctest
+            doctest.testmod(verbose=True, exclude_empty=True)
+            sys.exit()
         else:
             usage("Unknown option: %s%s" % (o, a))
 
