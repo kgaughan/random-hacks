@@ -14,8 +14,8 @@
 #
 
 # Configuration for the script: adjust to whatever suits you best.
-SIG=$HOME/Data/signatures/signature
-QUIPS=$HOME/Data/signatures/quips
+SIG=$HOME/.config/talideon.com/quicksig/signature
+QUIPS=$HOME/.config/talideon.com/quicksig/quips
 
 # Write out the fixed signature if it exists.
 test -f $SIG && cat $SIG
