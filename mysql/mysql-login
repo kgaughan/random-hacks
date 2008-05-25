@@ -5,7 +5,7 @@
 #
 
 SERVER_NAME=$1
-. $HOME/Data/mysql-logins
+. $HOME/data/mysql-logins
 if [ ! -n "$HOST" ]; then
 	echo "Usage: `basename $0` server [database]"
 	exit
