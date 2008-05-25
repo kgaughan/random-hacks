@@ -43,10 +43,10 @@ except:
 
 
 FALLBACK_SETTERS = [
-    "hsetroot -center"
+    'hsetroot -center'
 ]
-SETTINGS = path.expanduser("~/.config/talideon.com/wallpaper")
-WP_LINK = path.join(SETTINGS, "current")
+SETTINGS = path.expanduser('~/.config/talideon.com/wallpaper')
+WP_LINK = path.join(SETTINGS, 'current')
 
 
 def which(name):
@@ -153,6 +153,6 @@ if __name__ == '__main__':
             show_wallpaper()
         else:
             print bad_path()
-            print >> sys.stderr, "Bad path."
+            print >> sys.stderr, 'Bad path.'
 
 # ex:et sts=4 ts=4 sw=4:
