@@ -5,10 +5,11 @@ import os
 import hashlib
 import sys
 
+
 PKG_DB = '/var/db/pkg'
 
 
-def each_file(f):
+def each_file(f, pkg_path):
     """
     Generates a list of tuples, the first element being an absolute file
     path, and the second being its recorded hash, from a package manifest.
@@ -21,10 +22,12 @@ def each_file(f):
                 file = os.path.join(cwd, line.strip())
             elif line.startswith('@cwd '):
                 new_cwd = line.split(' ', 2)[1].strip()
-                # This check is a hack for dealing with broken manifests.
-                # mysql-client-5.0, nss, pth, portupgrade and zsh are
-                # examples.
-                if new_cwd != '':
+                if new_cwd == '.':
+                    cwd = pkg_path
+                elif new_cwd != '':
+                    # This check is a hack for dealing with broken manifests.
+                    # mysql-client-5.0, nss, pth, portupgrade and zsh are
+                    # examples.
                     cwd = new_cwd
             elif file != '' and line.startswith('@comment MD5:'):
                 digest = line.split(':', 2)[1].strip()
@@ -46,7 +49,7 @@ for pkg in sorted(os.listdir(PKG_DB)):
     if os.path.isfile(path):
         print "===>\tChecking %s" % (pkg,)
         with open(path) as f:
-            for (file_path, hash) in each_file(f):
+            for (file_path, hash) in each_file(f, os.path.join(PKG_DB, pkg)):
                 try:
                     if not os.path.exists(file_path):
                         if os.path.islink(file_path):
@@ -59,3 +62,5 @@ for pkg in sorted(os.listdir(PKG_DB)):
                     raise
                 except:
                     print "Unchecked: %s" % (file_path,)
+
+# ex:et sts=4 ts=4 sw=4:
