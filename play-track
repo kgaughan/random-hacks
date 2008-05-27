@@ -15,7 +15,7 @@
 # of this script.
 #
 
-PID_FILE=$HOME/.`basename '$0'`.pid
+PID_FILE=$HOME/.`basename "$0"`.pid
 
 kill_existing () {
 	test -r $PID_FILE && kill `cat $PID_FILE`
@@ -28,10 +28,15 @@ play () {
 			$i "$@" 2>&1 >/dev/null &
 			PID=$!
 			echo $PID >$PID_FILE
-			wait $PID && test -r $PID_FILE && rm $PID_FILE
-			exit
+			if wait $PID; then
+				test -r $PID_FILE && rm $PID_FILE
+				return 0
+			fi
+			test -r $PID_FILE && rm $PID_FILE
+			return 1
 		fi
 	done
+	return 1
 }
 
 randomise_files () {
@@ -49,7 +54,7 @@ play_dir () {
 }
 
 if [ "$@ " = " " ]; then
-	kill_existing && rm $PID_FILE
+	kill_existing
 elif [ -d "$@" ]; then
 	play_dir "$@"
 else
