@@ -18,16 +18,10 @@ the arguments with the name of the temporary file as the last argument.
 from __future__ import with_statement
 import sys
 import os
-import warnings
+import tempfile
 
-# To prevent it complaining about os.tempnam, which is ok in this instance.
-# os.tempnam is necessary as the filename is needed later.
-warnings.simplefilter("ignore", RuntimeWarning)
-
-pipedfile = os.tempnam()
-with open(pipedfile, "wb") as tf:
+with tempfile.NamedTemporaryFile() as tf:
 	tf.write(sys.stdin.read())
 	tf.flush()
-args = sys.argv[1:]
-os.spawnvp(os.P_WAIT, args[0], args + [pipedfile])
-os.unlink(pipedfile)
+	args = sys.argv[1:]
+	os.spawnvp(os.P_WAIT, args[0], args + [tf.name])
