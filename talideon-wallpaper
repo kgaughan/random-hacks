@@ -3,9 +3,6 @@
 # talideon-wallpaper
 # by Keith Gaughan <http://talideon.com/>
 #
-# A pipemenu script for Openbox for selecting and setting the current
-# wallpaper.
-#
 # Copyright (c) Keith Gaughan, 2008.
 # All Rights Reserved.
 #
@@ -32,6 +29,12 @@
 #
 # This license is subject to the laws and courts of the Republic of Ireland.
 #
+
+"""
+A pipemenu script for Openbox for selecting and setting the current
+wallpaper.
+"""
+
 
 import os, sys
 from os import path

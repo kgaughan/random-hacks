@@ -3,8 +3,6 @@
 # find-duplicates
 # by Keith Gaughan <http://talideon.com/>
 #
-# Finds an lists any duplicate files in the given directories.
-#
 # Copyright (c) Keith Gaughan, 2008.
 # All Rights Reserved.
 #
@@ -31,6 +29,10 @@
 #
 # This license is subject to the laws and courts of the Republic of Ireland.
 #
+
+"""
+Finds an lists any duplicate files in the given directories.
+"""
 
 from __future__ import with_statement
 import sys
