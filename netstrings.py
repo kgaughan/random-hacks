@@ -32,9 +32,11 @@ def netstring_reader(fd):
             raise MalformedNetstringError
         yield payload
 
-fd = open("sample.dat", "r")
-try:
-    for i in netstring_reader(fd):
-        print i
-finally:
-    fd.close()
+
+if __name__ == '__main__':
+    fd = open("sample.dat", "r")
+    try:
+        for i in netstring_reader(fd):
+            print i
+    finally:
+        fd.close()
