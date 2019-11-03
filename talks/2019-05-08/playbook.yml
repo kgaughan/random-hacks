@@ -1,0 +1,9 @@
+---
+- name: say hello
+  hosts: all
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: say hello
+      local_action: say_hello name="Guido"
