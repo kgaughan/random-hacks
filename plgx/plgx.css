@@ -1,0 +1,60 @@
+/*
+ * PLGX - A simple DHTML-based presentation system.
+ * by Keith Gaughan
+ *
+ * Homepage: http://talideon.com/projects/plgx/
+ *
+ * Copyright (c) Keith Gaughan, 2006.
+ * You can do whatever you like with this just as long as you (i) don't
+ * claim PLGX as your own work, (ii) leave any and all copyright notices
+ * in place, and (iii) keep in mind that this comes with NO WARRANTIES and
+ * that the author is not liable if this software causes something horrible
+ * to happen.
+ */
+
+body {
+	margin: 0;
+	padding: 0;
+	line-height: 1.5;
+}
+
+div.part {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background :white;
+}
+
+.part {
+	visibility: hidden;
+}
+
+div.part > h1 {
+	margin-top: 0;
+}
+
+#nav {
+	font-size: smaller;
+	position: absolute;
+	bottom: 0.5ex;
+	right: 0.5ex;
+	padding: 0.5ex;
+	border: 1px solid #EEE;
+	font-weight: bold;
+}
+
+#nav a {
+	color: #EEE;
+	text-decoration: none;
+	border: 1px solid #EEE;
+	padding: 0 0.5ex;
+}
+
+#nav a:hover {
+	color: #88C;
+	border-color: #CCE;
+	background-color: #EEF;
+}
+

@@ -1,0 +1,27 @@
+/* Keep the following line: */
+@import url(plgx.css);
+
+/* Edit the rest of the file to taste */
+
+body {
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: 250%;
+}
+
+/*
+ * The layout of each page.
+ */
+div.part {
+	background: white;
+	padding: 1em 2em;
+	border: 5px solid silver;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-align: center;
+	font-size: 130%;
+}
+
+.author, .url {
+	text-align: center;
+}
