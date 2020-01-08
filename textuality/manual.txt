@@ -1,0 +1,301 @@
+== Textuality
+
+*Textuality* is a text markup processor for ColdFusion 5 and above. Its
+primary inspiration is John Gruber's
+{http://daringfireball.net/projects/markdown/ Markdown} processor, although
+the language has been mangled thoroughly by practicalities such as the
+feasibility of implementing something like Markdown using CF5's buggy regex
+engine, the desire for smart quotes, the implementor's preference for
+Wikipedia-style links and other nonsense.
+
+It's completely implemented using CFScript, another practicality. Doing
+otherwise would have meant it would only work on CFMX and later. And don't
+even _think_ about saying it ought to have been implemented as a tag...
+
+== Invoking
+
+The `Textuality()` function takes four arguments:
+
+ * _s_:           The string to process.
+ * _imagePath_:   The path to a directory containing the smilie images.
+ * _allowHtml_:   Should the processor allow `=html` blocks?
+ * _followLinks_: Should links be marked with `rel=\"nofollow\"` attributes?
+
+It returns the processed text.
+
+The helper function `Textuality\_Inline()` may also be useful. It processes
+the inline markup, and takes all the same arguments (except _allowHtml_).
+
+----
+
+== Language summary (using Textuality markup)
+
+Textuality supports the following block-level markup elements:
+
+ * Paragraphs;
+ * Preformatted text;
+ * Blockquotes;
+ * Lists;
+   * Ordered and unordered;
+ * Raw HTML blocks;
+ * Headers (levels 1-6)
+ * Horizontal rules.
+
+And the following inline markup elements:
+
+ * Smart/magic quotes;
+ * Emphasis (rendered as italics);
+ * Strong emphasis (rendered as bold);
+ * Code;
+ * Links.
+
+=== Block-level Elements
+
+Block-level elements are divided into two groups:
+
+ # Single-line elements:
+   * Headers;
+   * Horizontal rules.
+ # Multiline elements:
+   * Paragraphs;
+   * Preformatted text blocks;
+   * Blockquotes;
+   * Lists;
+   * Raw HTML blocks.
+
+Multiline elements are delimited by a preceding single-line element, blank
+lines, or the start and ends of the text. Single-line elements must be
+preceded by either the start of the file or a blank line.
+
+Opening markers for multiline elements typically begin with `=` and must be
+on a line by themselves. Closing markers start with `=/` and also must be
+on a line by themselves.
+
+==== Paragraphs
+
+You're looking at one now.
+It can spread over several lines, and newlines in the text are not
+significant, though it's quite trivial to make them significant.
+
+==== Preformatted Text
+
+A preformatted block starts with a `=pre` marker and ends with a `=/pre`
+marker. Here's an example:
+
+=pre
+print "Hello, world!" 
+=/pre
+
+Which is transformed into:
+
+=pre
+<pre>
+print "Hello, world!"
+</pre>
+=/pre
+
+Inline markup is not applied to the contents of preformatted text blocks,
+nor are they able to contain other block-level elements:
+
+=pre
+== This is some markup
+
+ * Here's
+ * A
+ * List
+=/pre
+
+Will come out as:
+
+=pre
+<pre>
+== This is some markup
+
+ * Here's
+ * A
+ * List
+</pre>
+=/pre
+
+As you've probably guessed, newlines are significant.
+
+==== Blockquotes
+
+Blockquotes start with a `=quote` marker, and end with a `=/quote`. To
+prevent the closing marker being including in any preceding block-level
+element, it must be preceded by a blank line. I'm going to work on a clean
+way of getting rid of this restriction.
+
+=quote
+I am a quoted paragraph.
+ 
+=/quote
+
+You can nest quotes too:
+
+=quote
+=quote
+You said what?
+
+=/quote
+Yup, I said that.
+
+=/quote
+
+==== Lists (Ordered and Unordered)
+
+Unordered list items start with an asterisk (`\*`), and must be preceded by
+at least one space, and followed by at least one space. Ordered lists are
+marked similarly, using a hash (`#`) instead of an asterisk. They may be
+nested, and the level of nesting is marked by how many spaces the item
+starts with. Example:
+
+=pre
+ * I am a list
+   * I contain another list,
+   * one level up
+ * Back in the bottom-level list
+   # A numbered list
+   # one level up
+ * Indentation is quite forgiving
+         * This list is also one level up
+                  # And this is two.
+=/pre
+
+Gives:
+
+ * I am a list
+   * I contain another list,
+   * one level up
+ * Back in the bottom-level list
+   # A numbered list
+   # one level up
+ * Indentation is quite forgiving
+         * This list is also one level up
+                  # And this is two.
+
+==== Raw HTML Blocks
+
+These are an extra type of block activated if `true` is passed into the
+`allowHtml` argument of `Textuality()`. They're marked with opening `=html`
+and a closing `=/html` markers. If you need to include HTML element that
+Textuality doesn't (probably purposely, such as `<object/>`) support, you can
+include them using this element.
+
+==== Headers
+
+Headers are single-line elements. They are marked by line starting with
+between two and seven `=` characters, `==` marking a top-level header,
+`===` a level below that, and so on.
+
+==== Horizontal Rules
+
+Another single-line element. These are marked by lines containing a row
+of four `-` characters.
+
+=== Inline Markup
+
+There are four kind of inline markup. If you want to use any of the special
+characters literally, precede them with a `\\` character. Similarly, if you
+want a `\\`, type `\\\\`.
+
+==== Emphasis, Strong Emphasis and Code
+
+These are marked using `\_` (underscore), `\*` (asterisk), and `\``
+(backtick) respectively. Emphasis looks _like this_ (`\_like this\_`),
+strong emphasis looks *like this* (`\*like this\*`), and code looks `like
+this` (`\`like this\``).
+
+They can be nested, and used within the text of links, but the processor
+currently has some behaviour you shouldn't depend on. Currently, the processor
+thinks that a sequence like `\_some \*text \_like \*this` means 'start
+emphasis, start strong emphasis, start emphasis, start strong emphais' rather
+than 'start emphasis, start strong emphasis, end emphasis, end strong emphasis'
+or whatever you might expect. You should *not* depend on this behaviour as it
+will likely change.
+
+==== Links
+
+Links are delimited with curly brackets, `\{` and `\}`. Just inside the
+opening bracket is the link URL, and following that is optional text for the
+link. If you don't give any text, the link itself is used. You can link to
+{http://google.com/ Google} by using `\{http://google.com/ Google\}`, or omit
+the text completely, which would give you {http://google.com/}.
+
+==== Smart/Magic Quotes
+
+Textuality automatically attempts to replace your inline typewriter quotes
+(`\"` and `\'`) with proper typographer's quotes.
+
+=== Miscellany
+
+A few other minor things of note are smilies and adding CSS classes to
+preformatted text blocks.
+
+Following the opening `=pre` marker, you can type a space-delimited list of
+CSS classes to apply to the block. The primary reason for this is to allow
+JavaScript to be run over any such blocks to do things like syntax
+highlighting.
+
+To include a smilie (specifically a 20x20 GIF sitting in the directory passed
+in the `imagePath` argument) in your text, type `\{:_name_:\}`, where _name_
+is the name of the smilie image. For instance `\{:smile:\}` ({:smile:}) will
+include the image _smile.gif_. GIF files are used rathe than PNGs because they
+support animations.
+
+If you pass `false` into the `followLinks` argument, every link will get a
+`rel=\"nofollow\"` attribute, preventing search engines from following
+potentially spammy or otherwise untrustworthy links.
+
+----
+
+== Technical Details
+
+The parser used in Textuality is designed to work on any version of ColdFusion
+since CF5. This was an important design constraint since the server my site
+runs on runs CF5. The syntax is designed so that the parser does not need to
+recurse, backtrack, and only requires one character of look-ahead. Regex
+usage is minimal to avoid bugs in the regex implementation used in CF5. The
+always generates valid XHTML unless subverted by using `=html` blocks.
+
+Image inclusion is purposely _not_ a feature, and I haven't thought of ways to
+mark up definition lists and tables that don't completely suck for either the
+implementor (me) or the user.
+
+== Credits
+
+Textuality was implemented over the evenings of the 6th and 7th of May, 2006
+by {http://talideon.com/ Keith Gaughan} to replace an older and less capable
+markup processor hacked together a few years before that. It sucked, this
+sucks less.
+
+A slightly modified fork is used in the FusionWiki wiki engine, the main
+addition being the `\{\{\}\}` syntax for marking wiki words.
+
+== License
+
+Copyright (c) Keith Gaughan, 2006. All Rights Reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the original author nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
