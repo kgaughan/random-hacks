@@ -1,0 +1,177 @@
+Protocol
+========
+
+The client and server in the Stomp protocol exchange frames with one another.
+A frame is a chunk of data with a precise format, and certain frames expect
+certain other frames in response, whereas others expect none.
+
+
+Frames
+------
+
+A frame consists of a frame command line, a set of header lines, and a body.
+Each line is terminated by a linefeed (0x0A) character, and any trailing space
+(0x20) or carriage return (0x0D) characters must be stripped. The headers are
+terminated by a single empty line. Due to backwards compatibility concerns, a
+frame may start with a number of empty lines before the frame command line.
+Frame parsers must be able to handle leading empty lines in a frame, but frame
+generators should not generate leading empty lines.
+
+Command lines must be treated as case insensitive, but should be uppercase.
+They must not contain any trailing characters other than a single trailing
+carriage return character, which must be stripped.
+
+A header is a key/value pair, with the key separated from the value by a single
+':' (0x3A) character. Leading space in the value must be stripped. A header
+should match the pattern /[a-z0-9]+(-[a-z0-9]+)*/; headers must be treated as
+case insensitive, but should be lowercase. Header values must not characters in
+the range 0x00 to 0x1F inclusive and should not include DEL (0x7F) character.
+
+Frames must be terminated by a single NUL (0x00) character. In the absence of
+the frame having a 'content-length' (specified later) header, the NUL
+terminates the body of the frame, but is not part of the body. Frames should
+contain a 'content-length' header; this header specifies the length in bytes of
+the frame's body, i.e., everything between the empty line marking the end of
+the headers to the NUL that marks the end of the frame. If a frame does not
+have a 'content-length' header, it must not include NULs as their presence
+would prematurely mark the end of the frame; if a frame has a 'content-length'
+header, the body may contain any arbitrary data, including NULs.
+
+The frame command line and header lines must be encoded as UTF-8. The character
+encoding used by the body is not defined by this specification, but in
+interests of interoperatability, it's recommended implementations also use
+UTF-8 for textual frame bodies.
+
+Following are two examples, one of a frame with a 'content-length' header, and
+one without. For clarity in these examples and all that follow, the character
+sequence '^@' visually denotes the final NUL that marks the end of the frame.
+
+With a content length:
+
+    MESSAGE
+    destination: /queue/a
+    message-id: 1234
+    content-length: 13
+
+    hello, world!^@
+
+Without a content length:
+
+    MESSAGE
+    destination: /queue/a
+    message-id: 1234
+
+    hello, world!^@
+
+
+Command Overview
+----------------
+
+The commands can be grouped into two sets: client and server. If the client is
+a worker that wishes to subscribe to receive messages for a given destination.
+
+There are two session management frames a client can send to the server:
+CONNECT and DISCONNECT. A client must send a CONNECT frame to the server
+immediately after it connects to authenticate itself and start its session, and
+should send a DISCONNECT frame to the server before closing the connection so
+the server can gracefully release any resources associated with the session and
+close the connection with the client.
+
+The CONNECT frame has two required headers, 'username' and 'passcode', and
+should have an empty body. Example:
+
+    CONNECT
+    username: fred
+    passcode: xyzzy
+
+    ^@
+
+When the server receives a CONNECT frame, it will acknowledge the connection
+with a CONNECTED frame if successful. The CONNECTED frame has only one required
+header, 'session', which gives the unique identifier for the session. This
+unique identifier isn't used currently.
+
+When a client is disconnecting, it should send a DISCONNECT frame. This frame
+has no required headers and should have an empty body. The client must have
+successfully send a CONNECT frame to the server before sending a DISCONNECT
+frame.
+
+Once the client has successfully sent a CONNECT frame to the server, it may
+send any of the following frames to the server:
+
+ * SEND
+ * SUBSCRIBE
+ * UNSUBSCRIBE
+ * BEGIN
+ * COMMIT
+ * ABORT
+ * ACK
+ * DISCONNECT (as explained above)
+
+In turn, after successfully connecting to the server, the server may send the
+client the following frames:
+
+ * MESSAGE
+ * RECEIPT
+ * ERROR
+
+
+Receipts
+--------
+
+Any client frame except the initial CONNECT frame may include an optional
+'receipt' header. If this header is present, the server will acknowledge the
+receipt of the client frame with a RECEIPT frame.
+
+A RECEIPT frame had only one required header, 'receipt-id', and should have no
+body. The 'receipt-id' in the frame must be the value of the client frame being
+acknowledged. Note that the order in which the server sends RECEIPT frames to
+clients that have requested them may not correspond to the order in which the
+client frames the RECEIPT frames were requested for were sent to the server.
+
+Here's an example SEND frame that requesting the server send a RECEIPT frame:
+
+    SEND
+    destination: /queue/a
+    receipt: foo9876
+    content-length: 13
+
+    hello, world!^@
+
+And here's the corresponding RECEIPT frame sent by the server
+
+    RECEIPT
+    receipt-id: foo9876
+
+    ^@
+
+
+Sending messages to destinations
+--------------------------------
+
+To send a message to a given destination, clients must send a SEND frame to the
+server. SEND frames have one required header, 'destination', which specifies
+the message's destination; its value is an opaque string whose interpretation
+is dependent on the server's implementation details. In addition there is the
+optional 'transaction' header, the semantics of which will be covered later. As
+SEND frames may have non-empty bodies, they should have 'content-length'
+headers regardless of the size of the body or the presence or lack of NUL bytes
+in the body.
+
+Example:
+
+    SEND
+    destination: /queue/a
+    content-length: 13
+
+    hello, world!^@
+
+
+Workers
+-------
+
+In addition to being able to send messages, clients may subscribe to receive
+messages for certain destinations. By doing so, the client commits to being
+able to process MESSAGE frames containing messages for a the given destination.
+
+To subscribe to a destination, clients must send a SUBSCRIBE frame.
