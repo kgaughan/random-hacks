@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# quicksig.sh
+# by Keith Gaughan (kmgaughan@eircom.net; http://talideon.com/)
+#
+# A simple shell script for generating a random email signature.
+#
+# I, Keith Gaughan, hereby put this script in the public domain. It comes
+# without warranty of any kind and the author disclaims responsibility for
+# any mishap that may occur due to its use. You are requested, but not
+# obligated, to leave the attribution of the original author in place and
+# to append your name to the attribution if you distribute altered versions
+# of this script.
+#
+
+# Configuration for the script: adjust to whatever suits you best.
+SIG=$HOME/.config/talideon.com/quicksig/signature
+QUIPS=$HOME/.config/talideon.com/quicksig/quips
+
+# Write out the fixed signature if it exists.
+test -f $SIG && cat $SIG
+
+# Attempt to write out the randomised quip if the database exists.
+if test -f $QUIPS; then
+	# If the quips index needs rebuilding, rebuild it.
+	if test ! -f $QUIPS.dat -o $QUIPS.dat -ot $QUIPS; then
+		strfile $QUIPS 2>&1 >/dev/null
+	fi
+	fortune $QUIPS
+fi

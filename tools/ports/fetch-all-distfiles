@@ -1,0 +1,3 @@
+#!/bin/sh
+pkgdb -F
+portupgrade --all --fetch-only --upward-recursive --omit-check

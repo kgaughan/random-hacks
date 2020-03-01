@@ -1,0 +1,15 @@
+#!/bin/sh
+
+pids=""
+n=0
+for i in `pkg_info -aoq`; do
+	echo $i >&2
+	( cd "/usr/ports/$i" && make fetch-recursive-list ) &
+	pids="$pids $!"
+	n=$(($n + 1))
+	if [ $n -eq 8 ]; then
+		wait $pids
+		pids=""
+		n=0
+	fi
+done
