@@ -38,7 +38,7 @@ def main():
     if name == "":
         module.fail_json(msg="You need to tell me who you are!")
 
-    module.exit_json(changed=True, msg="Hello, {}!".format(name))
+    module.exit_json(changed=True, msg=f"Hello, {name}!")
 
 
 if __name__ == '__main__':

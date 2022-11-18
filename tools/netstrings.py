@@ -52,10 +52,8 @@ def netstring_reader(fdesc):
             if '0' > char > '9':
                 # Must be made up of digits.
                 raise MalformedNetstringError, "Bad length digit"
-            if char == '0' and nch == '':
-                # We can't allow leading zeros.
-                if fdesc.read(1) != ':':
-                    raise MalformedNetstringError, "No leading zeros"
+            if char == '0' and nch == '' and fdesc.read(1) != ':':
+                raise MalformedNetstringError, "No leading zeros"
             nch += char
         nch = int(nch, 10)
         payload = fdesc.read(nch)
