@@ -16,10 +16,7 @@ def read_config(file, section, defaults):
     try:
         config.readfp(fp)
         for k, d in defaults.iteritems():
-            if config.has_option(section, k):
-                result[k] = config.get(section, k)
-            else:
-                result[k] = d
+            result[k] = config.get(section, k) if config.has_option(section, k) else d
     finally:
         fp.close()
     return result
@@ -30,9 +27,7 @@ def read_csv(file, headings):
     try:
         reader = csv.reader(fp)
         for row in reader:
-            contents = {}
-            for i, heading in enumerate(headings):
-                contents[heading] = row[i]
+            contents = {heading: row[i] for i, heading in enumerate(headings)}
             result.append(contents)
     finally:
         fp.close()

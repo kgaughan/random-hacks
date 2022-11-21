@@ -54,8 +54,7 @@ WP_LINK = path.join(SETTINGS, 'current')
 
 def which(name):
     """Finds the path of some named executable available on PATH."""
-    env_path = os.environ.get('PATH')
-    if env_path:
+    if env_path := os.environ.get('PATH'):
         for dirname in env_path.split(os.pathsep):
             executable = path.join(dirname, name)
             if path.isfile(executable):

@@ -97,9 +97,8 @@ def true_duplicates(items, cmp=filecmp.cmp):
     """
     while len(items) > 1:
         next_set = []
-        this_set = []
         master = items[0]
-        this_set.append(master)
+        this_set = [master]
         for other in items[1:]:
             if cmp(master, other, False):
                 this_set.append(other)
