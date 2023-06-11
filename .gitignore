@@ -1,1 +1,4 @@
 *.retry
+*.so
+
+experiments/go-plugins/runner/runner
